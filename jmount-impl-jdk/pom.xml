@@ -23,7 +23,7 @@
         <dependency>
             <groupId>snw.jmount</groupId>
             <artifactId>jmount-common</artifactId>
-            <version>${jmount.api.version}</version>
+            <version>0.1.0</version>
         </dependency>
     </dependencies>
 

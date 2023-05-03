@@ -12,7 +12,7 @@
     <name>JMount API</name>
     <description>The API of the JMount library.</description>
     <artifactId>jmount-api</artifactId>
-    <version>${jmount.api.version}</version>
+    <version>0.1.0</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
