@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>JMount Parent POM</name>
+    <description>The root POM of the JMount library.</description>
+
+    <groupId>snw.jmount</groupId>
+    <artifactId>jmount-parent</artifactId>
+    <version>0.1.0</version>
+
+    <packaging>pom</packaging>
+    <modules>
+        <module>jmount-api</module>
+        <module>jmount-common</module>
+        <module>jmount-impl-jdk</module>
+        <module>jmount-impl-bytebuddy</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jmount.api.version>0.1.0</jmount.api.version>
+    </properties>
+
+</project>
