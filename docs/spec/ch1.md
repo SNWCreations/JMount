@@ -1,8 +1,6 @@
 # Chapter 1 - The API
 
-## 1.1  Definition
-
-### 1.1.1  Origin & Mount Point
+## 1.1  Origin & Mount Point
 
 For example:
 
@@ -150,6 +148,85 @@ For default methods in the MP interfaces, we'll **try** to use its method signat
 If found, use the underlying method as the implementation in the resulting instance.
  If not found, use the default implementation.
 
-## 1.4 Annotation
+## 1.4  Annotation
 
-TODO
+Thanks to the Java annotation type, it is possible to declare metadata for things in a graceful form.
+
+In this section, I'll explain the annotations provided by the library.
+
+### 1.4.1  MountPoint
+
+The `@MountPoint` annotation is used to mark the interfaces which will be regarded as a MP.
+
+The requirements of a valid MP declaration was written in [section 1.3](#13--mount-point)
+
+### 1.4.2  Redirect
+
+The `@Redirect` annotation is used to mark the MP methods which will be regarded as another **method** in the
+ underlying class which has the **compatible** return type and argument type.
+
+For example:
+
+```java
+public class Thing {
+    public void doSth() {
+        // code goes here
+    }
+}
+
+@MountPoint("xx.Thing")
+public interface ThingMP {
+    @Redirect("doSth")
+    void sth();
+}
+```
+
+We won't check if there is a method named `Thing#sth`, we'll regard the `ThingMP#doSth`
+ as `Thing#doSth`.
+
+### 1.4.3  AccessField
+
+The `@AccessField` annotation marks the MP method as an accessor of a field declared in the underlying class.
+
+The value of it is optional, if no value provided, the method name will be used to look up the field in the
+ underlying class.
+
+The method marked with `@AccessField` annotation has several forms:
+
+  a. Return type is `FieldAccessor`
+  
+  For example:
+
+```java
+@MountPoint("xx.Thing")
+public interface ThingMP {
+    @AccessField
+    FieldAccessor var0(); // will look up var0 field in Thing
+ 
+    @AccessField("var0")
+    FieldAccessor var0Access();
+}
+```
+
+  b. Return type is NOT `FieldAccessor`
+  
+  At this time, the methods in this form should follow a part of the JavaBean specification:
+    For getters, return type is the type of the field, and it takes no argument. For setters, takes one argument,
+    and its type is the type of the field.
+  
+  In this specification, you needn't to let the methods in this form use the actual underlying class type. Just use MP,
+    we'll handle it.
+  
+  For example:
+
+```java
+@MountPoint("xx.Thing")
+public interface ThingMP {
+    @AccessField
+    SomethingMP var0(); // will look up var0 field in Thing
+ 
+    @AccessField("var0")
+    void var0(SomethingMP somethingToSet);
+}
+```
+
