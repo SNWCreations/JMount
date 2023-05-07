@@ -331,3 +331,42 @@ But there is some exception:
 If you have a field with `Object` type, feel free to use `FieldAccessor<?>`, and  you don't
  need to use `FieldAccessor<Object>`, because it is useless.
 
+## 1.6  Constructor
+
+We know you maybe need to construct some origin things to use. (e.g. Creating a Minecraft packet)
+
+So we also provide ways for you to create origin instances. You also can wrap the result into MP with a
+ existing MP interface at once by using special forms of constructors we provided.
+
+The constructor-related methods will be provided by `Mount` objects.
+
+Their method signatures are:
+
+    Mount#findConstructor(String originClassName, Class<?>... argTypes) -> java.lang.reflect.Constructor<?>
+    Mount#findWrappedConstructor(String originClassName, Class<?>[] argTypes[, Function<java.lang.reflect.Constructor<?>, WrappedConstructor>]) -> WrappedConstructor
+    Mount#findConstructorMP(Class<T> mp, Class<?> argTypes[, Function<java.lang.reflect.Constructor<?>, WrappedConstructor>]) -> ConstructorMP<T>
+
+The `Function<java.lang.reflect.Constructor<?>, WrappedConstructor>` is optional if you've specified it
+ by using the `wrappedConstructorProvider` method in the builder of `Mount`.
+
+`argTypes` can contain the `MP` types, they will be converted into original classes if needed.
+
+`originClassName` is the **remapped** name of the origin class, which means the patterns in the name
+ should be already replaced by using the correct thing.
+
+The constructor family in this specification is:
+
+`ConstructorMP` wraps `WrappedConstructor`, `WrappedConstructor` wraps `java.lang.reflect.Constructor<?>`.
+
+`ConstructorMP` can wrap the result from the real constructor into MP instances.
+
+`WrappedConstructor` is just an interface, but it can have different implementations (e.g. MethodHandle based)
+ to avoid the performance problem caused by the Java reflection API.
+
+If you need to access the origin constructor from the `WrappedConstructor`, feel free to use its
+ `getUnderlyingConstructor` method.
+
+`WrappedConstructor` can be provided by the `getUnderlyingWrappedConstructor` method of `ConstructorMP`.
+
+The constructor instances will **NOT** be cached, we'll look up them on every call. So manage it by yourself.
+
