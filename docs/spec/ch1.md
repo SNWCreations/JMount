@@ -40,8 +40,9 @@ A `Mount` object represents a configured, ready-to-use utility tool
 
 It has some attributes like...
 * Name transformer
-* Pattern Replacer
 * ClassLoader
+
+It also provide a method named `findOriginClass` for you to look up the underlying class of a Mount Point class.
 
 ### 1.2.1  Name transformer
 
@@ -64,11 +65,7 @@ public interface NameTransformer {
 }
 ```
 
-### 1.2.2  Pattern Replacer
-
-It just like a part of name transformer, but ONLY transform class names in the value of `@MountPoint` annotations.
-
-### 1.2.3  ClassLoader
+### 1.2.2  ClassLoader
 
 The class loader in Mount objects will be used to look up classes using the exact names from name transformers
  (or pattern replacer).
@@ -367,12 +364,12 @@ The constructor-related methods will be provided by `Mount` objects.
 
 Their method signatures are:
 
-    Mount#findConstructor(String originClassName, Class<?>... argTypes) -> java.lang.reflect.Constructor<?>
-    Mount#findWrappedConstructor(String originClassName, Class<?>[] argTypes[, Function<java.lang.reflect.Constructor<?>, WrappedConstructor>]) -> WrappedConstructor
-    Mount#findConstructorMP(Class<T> mp, Class<?> argTypes[, Function<java.lang.reflect.Constructor<?>, WrappedConstructor>]) -> ConstructorMP<T>
+    Mount#findConstructor(Class<?> originClazz, Class<?>... argTypes) -> java.lang.reflect.Constructor<?>
+    Mount#findConstructorAndWrap(Class<?> originClazz, Class<?>[] argTypes) -> WrappedConstructor
+    Mount#findConstructorAndWrapAsMP(Class<T> mp, Class<?> argTypes) -> ConstructorMP<T>
 
-The `Function<java.lang.reflect.Constructor<?>, WrappedConstructor>` is optional if you've specified it
- by using the `wrappedConstructorProvider` method in the builder of `Mount`.
+You need to specified the wrapped constructor provider by using the `wrappedConstructorProvider` method
+ in the builder of `Mount`.
 
 `argTypes` can contain the `MP` types, they will be converted into original classes if needed.
 
