@@ -331,6 +331,15 @@ But there is some exception:
 If you have a field with `Object` type, feel free to use `FieldAccessor<?>`, and  you don't
  need to use `FieldAccessor<Object>`, because it is useless.
 
+The field accessor can also be produced by the `Mount` objects:
+
+    Mount#accessField(Object o, String fieldName) -> FieldAccessor<?>
+    Mount#accessField(Object o, String fieldName, Class<T> expectedMPType) -> FieldAccessor<T>
+    Mount#accessStaticField(Class<?> clazz, String fieldName) -> FieldAccessor<?>
+    Mount#accessStaticField(Class<?> clazz, String fieldName, Class<T> expectedMPType) -> FieldAccessor<T>
+
+`o` and `clazz` arguments accept both MP and origin objects.
+
 ## 1.6  Constructor
 
 We know you maybe need to construct some origin things to use. (e.g. Creating a Minecraft packet)
