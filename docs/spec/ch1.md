@@ -48,6 +48,22 @@ It has some attributes like...
 The name transformer is a object which is used to convert name strings with pattern
  (e.g. class name in `@MountPoint` annotations) into the exact names.
 
+The value of `@Redirect` and `@AccessField` annotations will be passed to it.
+
+The declaration of it just like:
+
+```java
+public interface NameTransformer {
+    
+    String transformClassName(String classNameWithPattern);
+    
+    String transformFieldName(String originClassName, String fieldNameWithPattern);
+    
+    String transformMethodName(String originClassName, String methodNameWithPattern, Class<?>[] convertedArgTypes);
+    
+}
+```
+
 ### 1.2.2  Pattern Replacer
 
 It just like a part of name transformer, but ONLY transform class names in the value of `@MountPoint` annotations.
