@@ -198,15 +198,27 @@ The method marked with `@AccessField` annotation has several forms:
   For example:
 
 ```java
+public class Something {
+    // ...
+}
+
+public class Thing {
+    Something var0;
+}
+```
+
+```java
 @MountPoint("xx.Thing")
 public interface ThingMP {
     @AccessField
-    FieldAccessor var0(); // will look up var0 field in Thing
+    FieldAccessor<SomethingMP> var0(); // will look up var0 field in Thing
  
     @AccessField("var0")
-    FieldAccessor var0Access();
+    FieldAccessor<SomethingMP> var0Access();
 }
 ```
+
+  The more information about `FieldAccessor` at [section 1.5](#15--field-accessor) is available.
 
   b. Return type is NOT `FieldAccessor`
   
