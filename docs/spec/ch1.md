@@ -230,3 +230,92 @@ public interface ThingMP {
 }
 ```
 
+### 1.4.4  RuntimeType
+
+We'll try our best to prevent the wrong type for your code.
+
+So we will check your interface on mounting to ensure it fits the underlying
+ class.
+
+But we know you need to suppress the type check in some special situations,
+ so the `@RuntimeType` annotation can help you to solve this problem.
+
+**WARNING**: Do NOT use this annotation if possible. Or you should pay
+ attention to the arguments you'll pass to the method.
+
+It can be used at methods declaration and argument type declaration.
+
+The most important thing is that this annotation does **NOT** remove the type check,
+ we just delayed it so that it will work on call.
+
+For example:
+
+```java
+public class Thing {
+    
+    public Thing operation(Thing anotherThing) {
+        // code...
+    }
+}
+
+// -- NEW FILE --
+
+@MountPoint("xxx.Thing")
+public interface ThingMP {
+    
+    @RuntimeType // don't care the type, just return Object
+    Object operation(@RuntimeType Object anotherThing);
+    
+    // this still work
+    ThingMP operation(ThingMP anotherThing);
+}
+```
+
+## 1.5  Field Accessor
+
+In the [section 1.4.3](#143--accessfield), we've already introduced the `@AccessField` annotation
+ to you, this section is used to fully explain the details about `FieldAccessor`.
+
+The code of FieldAccessor just like:
+
+```java
+import java.lang.reflect.Field;
+
+// The "T" type means the MP type of the underlying field
+public interface FieldAccessor<T> {
+
+    Object get();
+
+    void set(Object newValue);
+
+    // Fail if the T type is unknown for this instance
+    T getMounted() throws IllegalStateException;
+
+    boolean isFinal();
+
+    Field getUnderlyingField();
+}
+```
+
+When we detected a method with `@AccessField` annotation, if it wants to return `FieldAccessor`,
+ we'll get the data type of the underlying field, and compare it with the
+ parameter type "T" which is declared with the method, if the underlying type equals to the underlying
+ type provided by "T" type, or the underlying type of "T" type is superclass of the underlying type of
+ the underlying field, the check passed.
+
+But there is some exception:
+
+  a. The "T" type is the wrapper type of Java standard data type, or String.
+  
+  It's OK to use declarations like `FieldAccessor<Integer>` and `FieldAccessor<String>`.
+  
+  b. The "T" type is `?`
+  
+  It means you don't have an available MP type for the underlying field, at this time, the `getMounted`
+   method of the `FieldAccessor` produced by the MP method won't work (will throw `IllegalStateException`).
+  
+  Tips: `? extends XXX` or `? super XXX` won't work. A range is useless for us.
+  
+If you have a field with `Object` type, feel free to use `FieldAccessor<?>`, and  you don't
+ need to use `FieldAccessor<Object>`, because it is useless.
+
