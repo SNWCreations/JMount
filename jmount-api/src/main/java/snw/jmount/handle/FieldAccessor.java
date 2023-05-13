@@ -41,8 +41,9 @@ public interface FieldAccessor<T> {
      * @param newValue The new value
      * @throws IllegalArgumentException Thrown if the type of the new value does NOT match
      *                                  the type of the underlying field
+     * @throws IllegalStateException    Thrown if the underlying field is final
      */
-    void set(Object newValue) throws IllegalArgumentException;
+    void set(Object newValue) throws IllegalArgumentException, IllegalStateException;
 
     /**
      * Get the wrapped Mount Point object of the data inside the underlying field.
