@@ -19,15 +19,21 @@ package snw.jmount.common;
 import snw.jmount.Mount;
 import snw.jmount.NameTransformer;
 import snw.jmount.common.handle.ConstructorMPImpl;
+import snw.jmount.common.handle.MethodHandleBasedFieldAccessor;
+import snw.jmount.common.handle.MethodHandleBasedWrappedConstructor;
 import snw.jmount.handle.ConstructorMP;
+import snw.jmount.handle.FieldAccessor;
+import snw.jmount.handle.WrappedConstructor;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
 
 import static snw.jmount.common.util.MountUtils.*;
 import static snw.jmount.common.util.MountUtils.convertMethod;
 import static snw.jmount.common.util.ReflectUtils.lookUpConstructor;
+import static snw.jmount.common.util.ReflectUtils.lookUpField;
 
 /**
  * A shared {@link snw.jmount.Mount} implementation with partly completed feature.
@@ -90,4 +96,33 @@ public abstract class AbstractMount implements Mount {
             }
         }
     }
+
+    @Override
+    public FieldAccessor<?> accessStaticField(Class<?> originClazz, String fieldName) throws NoSuchElementException {
+        return accessStaticField(originClazz, fieldName, null);
+    }
+
+    @Override
+    public <T> FieldAccessor<T> accessStaticField(Class<?> originClazz, String fieldName, Class<T> mountType) throws NoSuchElementException, IllegalArgumentException {
+        final Field underlyingField = lookUpField(originClazz, fieldName, this);
+        return new MethodHandleBasedFieldAccessor<>(this, null, mountType, underlyingField);
+    }
+
+    @Override
+    public FieldAccessor<?> accessField(Object origin, String fieldName) throws NoSuchElementException {
+        return accessField(origin, fieldName, null);
+    }
+
+    @Override
+    public <T> FieldAccessor<T> accessField(Object origin, String fieldName, Class<T> mountType) throws NoSuchElementException, IllegalArgumentException {
+        final Field underlyingField = lookUpField(origin.getClass(), fieldName, this);
+        return new MethodHandleBasedFieldAccessor<>(this, null, mountType, underlyingField);
+    }
+
+    @Override
+    public WrappedConstructor findConstructorAndWrap(Class<?> originClazz, Class<?>... argTypes) throws NoSuchElementException {
+        final Constructor<?> constructor = lookUpConstructor(originClazz, argTypes, this);
+        return new MethodHandleBasedWrappedConstructor(constructor);
+    }
+
 }
