@@ -20,9 +20,9 @@ import snw.jmount.Mount;
 import snw.jmount.annotation.AccessField;
 import snw.jmount.annotation.MountPoint;
 import snw.jmount.annotation.Redirect;
+import snw.jmount.handle.FieldAccessor;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -69,6 +69,82 @@ public final class MountUtils {
      */
     public static boolean isFieldAccessor(Method method) {
         return method.isAnnotationPresent(AccessField.class);
+    }
+
+    /**
+     * Check the provided method if it is a valid field accessor and do nothing, otherwise this method fails.
+     *
+     * @param m The method to be checked
+     * @param mount The mount object used for looking up the underlying class
+     */
+    public static void checkIfIsFieldAccessor(Method m, Mount mount) {
+        if (!isFieldAccessor(m)) {
+            throw new IllegalArgumentException(m + " is not a field accessor");
+        }
+        final Class<?> underlyingClass = mount.findOriginClass(m.getDeclaringClass());
+
+        String fieldName = m.getAnnotation(AccessField.class).value();
+        if (fieldName == null || fieldName.isEmpty()) {
+            fieldName = m.getName();
+        }
+        fieldName = mount.nameTransformer().transformFieldName(
+                underlyingClass.getName(), fieldName
+        );
+        final String finalFieldName = fieldName;
+
+        final Field underlyingField = perform(() -> underlyingClass.getDeclaredField(finalFieldName));
+
+        final Type returnType = m.getGenericReturnType();
+        if (returnType instanceof ParameterizedType) {
+            final ParameterizedType parameterizedType = (ParameterizedType) returnType;
+            if (parameterizedType.getOwnerType() == FieldAccessor.class) {
+                final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+                if (actualTypeArguments.length != 1) {
+                    invalidFieldAccessor(m, "impossible: parameterized type detected, but argument length is not equals to 1");
+                }
+                final Type actualTypeArgument = actualTypeArguments[0];
+                if (actualTypeArgument instanceof Class) {
+                    if (!isMP((Class<?>) actualTypeArgument)) {
+                        invalidFieldAccessor(m, "field accessors only accepts Mount Point types or ? as its type variable");
+                    }
+                } else if (actualTypeArgument instanceof WildcardType) {
+                    final WildcardType wildcardType = (WildcardType) actualTypeArgument;
+                    if (!(
+                            wildcardType.getLowerBounds().length == 0 &&
+                                    wildcardType.getUpperBounds().length == 1 &&
+                                    wildcardType.getUpperBounds()[0] == Object.class
+                            )) {
+                        invalidFieldAccessor(m, "field accessors only accepts Mount Point types or ? as its type variable");
+                    }
+                }
+            }
+        } else if (returnType == void.class) {
+            if (m.getParameterCount() == 0) {
+                invalidFieldAccessor(m, "it is impossible to declare a field with void type");
+            } else if (m.getParameterCount() != 1) {
+                invalidFieldAccessor(m, "not a valid setter, too many arguments");
+            }
+        } else {
+            final Class<?> returnTypeAsClass = (Class<?>) returnType;
+            final Class<?> ourReturnType = convertOrReturn(returnTypeAsClass, mount);
+            final Class<?> realReturnType = underlyingField.getType();
+            if (!ourReturnType.isAssignableFrom(realReturnType)) {
+                invalidFieldAccessor(
+                        m, "underlying field type " + realReturnType
+                                + " is not compatible with the declared type (" + ourReturnType
+                                + ") of the accessor"
+                );
+            }
+        }
+    }
+
+    /*
+       Only for internal use: always throw an IllegalArgumentException, used by checkIfIsFieldAccessor method.
+     */
+    private static void invalidFieldAccessor(Method method, String msg) {
+        throw new IllegalArgumentException(
+                method + " is not a valid field accessor: " + msg
+        );
     }
 
     /**

@@ -22,9 +22,11 @@ import snw.jmount.common.handle.ConstructorMPImpl;
 import snw.jmount.handle.ConstructorMP;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
 
-import static snw.jmount.common.util.MountUtils.convertToUnderlyingClass;
+import static snw.jmount.common.util.MountUtils.*;
+import static snw.jmount.common.util.MountUtils.convertMethod;
 import static snw.jmount.common.util.ReflectUtils.lookUpConstructor;
 
 /**
@@ -68,9 +70,24 @@ public abstract class AbstractMount implements Mount {
     }
 
     /**
-     * Check if the class is a valid Mount Point.
+     * Check if the class is a valid Mount Point and do nothing, otherwise this method fails.
      *
      * @param mp A Mount Point interface class
      */
-    protected abstract void verify(Class<?> mp);
+    protected void verify(Class<?> mp) {
+        Class<?> underlyingClass = findOriginClass(mp);
+        for (Method m : mp.getDeclaredMethods()) {
+            if (isFieldAccessor(m)) {
+                checkIfIsFieldAccessor(m, this);
+            } else {
+                try {
+                    convertMethod(m, this);
+                } catch (NoSuchElementException e) {
+                    if (!m.isDefault()) {
+                        throw e; // rethrow
+                    }
+                }
+            }
+        }
+    }
 }
