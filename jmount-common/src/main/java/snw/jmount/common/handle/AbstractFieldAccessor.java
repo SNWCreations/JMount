@@ -34,13 +34,14 @@ import static snw.jmount.common.util.MountUtils.convertOrReturn;
  */
 public abstract class AbstractFieldAccessor<T> implements FieldAccessor<T> {
     protected final Mount mount;
+    protected final @Nullable Object underlyingObject;
     protected final @Nullable Class<T> mountType;
     protected final Field field;
     protected T mounted;
 
     protected AbstractFieldAccessor(
             Mount mount,
-            @Nullable Class<T> mountType,
+            @Nullable Object underlyingObject, @Nullable Class<T> mountType,
             Field field
     ) {
         if (!field.getDeclaringClass().isAssignableFrom(mount.findOriginClass(mountType))) {
@@ -49,6 +50,7 @@ public abstract class AbstractFieldAccessor<T> implements FieldAccessor<T> {
             );
         }
         this.mount = mount;
+        this.underlyingObject = underlyingObject;
         this.mountType = mountType;
         this.field = field;
     }
@@ -58,7 +60,7 @@ public abstract class AbstractFieldAccessor<T> implements FieldAccessor<T> {
         if (isFinal()) {
             throw new IllegalStateException("The underlying field is final");
         }
-        if (newValue != null && !field.getDeclaringClass().isAssignableFrom(convertOrReturn(newValue.getClass(), mount))) {
+        if (newValue != null && !field.getType().isAssignableFrom(convertOrReturn(newValue.getClass(), mount))) {
             throw new IllegalArgumentException("The type of the new value is not compatible with the underlying field");
         }
         set0(newValue);
