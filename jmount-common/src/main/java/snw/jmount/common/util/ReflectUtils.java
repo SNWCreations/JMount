@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
-import java.util.concurrent.Callable;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -210,10 +209,10 @@ public final class ReflectUtils {
      * @param <T> The return type of the provided callable
      * @throws ReflectOperationException Thrown if any exception occurred during the execution of the provided callable
      */
-    public static <T> T perform(Callable<T> callable) throws ReflectOperationException {
+    public static <T> T perform(UncheckedCallable<T> callable) throws ReflectOperationException {
         try {
             return callable.call();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ReflectOperationException("Cannot perform action", e);
         }
     }
