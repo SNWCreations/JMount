@@ -16,26 +16,22 @@
 
 package snw.jmount.common.handle;
 
-import snw.jmount.handle.WrappedConstructor;
-
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 
-/**
- * A shared implementation of {@link WrappedConstructor} with partly completed feature.
- *
- * @author SNWCreations
- * @since 0.1.0
- */
-public abstract class AbstractWrappedConstructor implements WrappedConstructor {
-    protected final Constructor<?> underlying;
+import static snw.jmount.common.util.ReflectUtils.perform;
 
-    protected AbstractWrappedConstructor(Constructor<?> underlying) {
-        this.underlying = underlying;
-        this.underlying.setAccessible(true);
+public class MethodHandleBasedWrappedConstructor extends AbstractWrappedConstructor {
+    protected final MethodHandle handle;
+
+    public MethodHandleBasedWrappedConstructor(Constructor<?> underlying) {
+        super(underlying);
+        this.handle = perform(() -> MethodHandles.lookup().unreflectConstructor(underlying));
     }
 
     @Override
-    public Constructor<?> getUnderlyingConstructor() {
-        return underlying;
+    public Object newInstance(Object... initArgs) {
+        return perform(() -> handle.invoke(initArgs));
     }
 }
