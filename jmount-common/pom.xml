@@ -20,4 +20,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>snw.jmount</groupId>
+            <artifactId>jmount-api</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+    </dependencies>
+
 </project>

@@ -1,0 +1,50 @@
+/*
+ * Copyright 2023 JMount contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package snw.jmount.common.handle;
+
+import snw.jmount.Mount;
+import snw.jmount.handle.ConstructorMP;
+import snw.jmount.handle.WrappedConstructor;
+
+/**
+ * A shared implementation of {@link ConstructorMP} with partly completed feature.
+ *
+ * @param <T> The Mount Point type of resulting objects
+ * @author SNWCreations
+ * @since 0.1.0
+ */
+public class ConstructorMPImpl<T> implements ConstructorMP<T> {
+    protected final Mount mount;
+    protected final Class<T> mountType;
+    protected final WrappedConstructor underlying;
+
+    public ConstructorMPImpl(Mount mount, Class<T> mountType, WrappedConstructor underlying) {
+        this.mount = mount;
+        this.mountType = mountType;
+        this.underlying = underlying;
+    }
+
+    @Override
+    public T newInstance(Object... initArgs) {
+        return mount.mount(mountType, getUnderlyingConstructor().newInstance(initArgs));
+    }
+
+    @Override
+    public WrappedConstructor getUnderlyingConstructor() {
+        return underlying;
+    }
+}
