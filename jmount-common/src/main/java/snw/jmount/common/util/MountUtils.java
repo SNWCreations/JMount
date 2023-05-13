@@ -206,6 +206,41 @@ public final class MountUtils {
     }
 
     /**
+     * Convert all objects in the provided array into origin ones.
+     *
+     * @param mount The mount object used for looking up the underlying class
+     * @param argTypes The argument type for checking
+     * @param objects The objects to be converted
+     * @return The converted objects
+     */
+    public static Object[] convert(Mount mount, Class<?>[] argTypes, Object[] objects) {
+        List<Object> list = new ArrayList<>(objects.length);
+        for (int i = 0; i < objects.length; i++) {
+            Object object = objects[i];
+            Object adding = null;
+            if (object != null) {
+                if (isMP(object.getClass())) {
+                    if (argTypes[i].isAssignableFrom(mount.findOriginClass(object.getClass()))){
+                        adding = mount.unmount(object);
+                    } else {
+                        throw new IllegalArgumentException(
+                                "Provided object is not compatible with the provided argument types"
+                        );
+                    }
+                } else if (!argTypes[i].isAssignableFrom(object.getClass())) {
+                    throw new IllegalArgumentException(
+                            "Provided object is not compatible with the provided argument types"
+                    );
+                } else {
+                    adding = object;
+                }
+            }
+            list.add(adding);
+        }
+        return list.toArray();
+    }
+
+    /**
      * Look up a method matches the underlying class.
      *
      * @param method The method from Mount Point
