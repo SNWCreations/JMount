@@ -37,7 +37,6 @@ public abstract class AbstractFieldAccessor<T> implements FieldAccessor<T> {
     protected final @Nullable Object underlyingObject;
     protected final @Nullable Class<T> mountType;
     protected final Field field;
-    protected T mounted;
 
     protected AbstractFieldAccessor(
             Mount mount,
@@ -64,16 +63,12 @@ public abstract class AbstractFieldAccessor<T> implements FieldAccessor<T> {
             throw new IllegalArgumentException("The type of the new value is not compatible with the underlying field");
         }
         set0(newValue);
-        mounted = null;
     }
 
     @Override
     public T getMounted() throws IllegalStateException {
         if (this.mountType == null) {
             throw new IllegalStateException("This accessor cannot create mounted objects because target type is unknown");
-        }
-        if (mounted != null) {
-            return mounted; // use cache
         }
         return getMounted0();
     }
