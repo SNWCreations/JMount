@@ -22,8 +22,6 @@ import snw.jmount.impl.jdk.handle.MountInvocationHandler;
 
 import java.lang.reflect.Proxy;
 
-import static snw.jmount.common.util.MountUtils.convertToUnderlyingClass;
-
 /**
  * The {@link snw.jmount.Mount} implementation based on pure JDK things.
  *
@@ -38,7 +36,7 @@ public class JDKMount extends AbstractMount {
 
     @Override
     public <T> T mount(Class<T> mpType, Object origin) throws IllegalArgumentException {
-        if (!origin.getClass().isAssignableFrom(convertToUnderlyingClass(mpType, this))) {
+        if (!findOriginClass(mpType).isAssignableFrom(origin.getClass())) {
             throw new IllegalArgumentException("The target Mount Point type is not compatible with the provided object");
         }
         verify(mpType);
