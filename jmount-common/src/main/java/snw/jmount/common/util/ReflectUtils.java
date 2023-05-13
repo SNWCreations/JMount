@@ -18,10 +18,12 @@ package snw.jmount.common.util;
 
 import org.jetbrains.annotations.Nullable;
 import snw.jmount.Mount;
+import snw.jmount.annotation.RuntimeType;
 import snw.jmount.common.exceptions.ReflectOperationException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -59,7 +61,7 @@ public final class ReflectUtils {
     public static Method matchMethod(
             Class<?> underlyingClass,
             String methodName,
-            Class<?>[] argTypes,
+            Parameter[] argTypes,
             Class<?> returnType,
             Mount mount
     ) throws NoSuchElementException {
@@ -73,10 +75,13 @@ public final class ReflectUtils {
             if (!isCompatible(parameterTypes, argTypes, mount)) {
                 continue;
             }
-            final Class<?> methodReturnType = method.getReturnType();
-            if (methodReturnType == convertOrReturn(methodReturnType, mount)) {
-                return method;
+            if (!method.isAnnotationPresent(RuntimeType.class)) {
+                final Class<?> methodReturnType = method.getReturnType();
+                if (!convertOrReturn(methodReturnType, mount).isAssignableFrom(methodReturnType)) {
+                    continue;
+                }
             }
+            return method;
         }
 
         throw new NoSuchElementException(
@@ -130,7 +135,7 @@ public final class ReflectUtils {
         for (int i = 0; i < classes.length; i++) {
             final Class<?> paramType = classes[i];
             final Class<?> paramTypeFromArgs = anotherClassArray[i];
-            if (paramType != convertOrReturn(paramTypeFromArgs, mount)) {
+            if (!paramType.isAssignableFrom(convertOrReturn(paramTypeFromArgs, mount))) {
                 return false;
             }
         }
@@ -193,7 +198,7 @@ public final class ReflectUtils {
      * @param returnType The return type
      * @return The method signature string
      */
-    public static String toMethodSignature(String methodName, Class<?>[] argTypes, Class<?> returnType) {
+    public static String toMethodSignature(String methodName, Parameter[] argTypes, Class<?> returnType) {
         return String.valueOf(returnType) +
                 ' ' +
                 methodName +
@@ -208,7 +213,7 @@ public final class ReflectUtils {
      * @param argTypes An array of the {@link Class} objects
      * @return The string
      */
-    public static String toParamSignature(Class<?>[] argTypes) {
+    public static String toParamSignature(Class<?>... argTypes) {
         return Arrays.stream(argTypes).map(Class::getTypeName).collect(Collectors.joining(", "));
     }
 }
