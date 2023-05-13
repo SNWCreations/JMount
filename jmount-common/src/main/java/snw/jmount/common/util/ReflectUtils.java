@@ -22,6 +22,7 @@ import snw.jmount.annotation.RuntimeType;
 import snw.jmount.common.exceptions.ReflectOperationException;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
@@ -263,5 +264,19 @@ public final class ReflectUtils {
         );
         sb.append(')');
         return sb.toString();
+    }
+
+    /**
+     * Look up field in the underlying class.
+     *
+     * @param underlyingClass The underlying class
+     * @param fieldNameWithPattern The field name with pattern
+     * @param mount The {@link Mount} for replacing patterns
+     * @return The field
+     */
+    public static Field lookUpField(Class<?> underlyingClass, String fieldNameWithPattern, Mount mount) {
+        final String fieldName =
+                mount.nameTransformer().transformFieldName(underlyingClass.getName(), fieldNameWithPattern);
+        return perform(() -> underlyingClass.getDeclaredField(fieldName));
     }
 }
