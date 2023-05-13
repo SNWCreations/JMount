@@ -162,6 +162,20 @@ public final class MountUtils {
     }
 
     /**
+     * Convert the Mount Point object into the underlying object if needed.
+     *
+     * @param maybeMP An object
+     * @param mount The mount object used for looking up the underlying class
+     * @return The converted object if the provided object is a Mount Point instance, or the {@code maybeMP} itself
+     */
+    public static Object convertOrReturn(Object maybeMP, Mount mount) {
+        if (!isMP(maybeMP.getClass())) {
+            return maybeMP;
+        }
+        return mount.unmount(maybeMP);
+    }
+
+    /**
      * Convert the provided class into the underlying type, or fail if not a Mount Point.
      *
      * @param mp The Mount Point class
