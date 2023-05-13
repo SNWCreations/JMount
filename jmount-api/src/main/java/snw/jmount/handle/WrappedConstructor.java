@@ -29,7 +29,8 @@ public interface WrappedConstructor {
     /**
      * Create an instance through this constructor.
      *
-     * @param initArgs The arguments which will be passed to the constructor
+     * @param initArgs The arguments which will be passed to the constructor,
+     *                 they will be converted into origin objects if needed
      * @return The new object
      */
     Object newInstance(Object... initArgs);
