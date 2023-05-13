@@ -19,6 +19,10 @@ package snw.jmount;
 import org.jetbrains.annotations.Contract;
 import snw.jmount.spi.MountBuilderProvider;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.ServiceLoader;
+
 /**
  * The {@link Mount} object builder.
  *
@@ -60,7 +64,13 @@ public interface MountBuilder {
      */
     @Contract("-> new")
     static MountBuilder create() {
-        return MountBuilderProvider.getInstance().create();
+        final Iterator<MountBuilderProvider> iterator =
+                ServiceLoader.load(MountBuilderProvider.class).iterator();
+        if (iterator.hasNext()) {
+            return iterator.next().create();
+        } else {
+            throw new NoSuchElementException("No MountBuilder provider available!");
+        }
     }
 
 }

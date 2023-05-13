@@ -18,37 +18,17 @@ package snw.jmount.spi;
 
 import snw.jmount.MountBuilder;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.ServiceLoader;
-import java.util.concurrent.atomic.AtomicReference;
-
 /**
  * The SPI interface for providing {@link snw.jmount.MountBuilder} objects.
  *
  * @author SNWCreations
  * @since 0.1.0
  */
-public abstract class MountBuilderProvider {
-    private static final AtomicReference<MountBuilderProvider> INSTANCE = new AtomicReference<>();
+public interface MountBuilderProvider {
 
     /**
      * @see MountBuilder#create()
      */
-    public abstract MountBuilder create();
+    MountBuilder create();
 
-    public static MountBuilderProvider getInstance() {
-        return INSTANCE.updateAndGet(i -> {
-            if (i == null) {
-                final Iterator<MountBuilderProvider> iterator =
-                        ServiceLoader.load(MountBuilderProvider.class).iterator();
-                if (iterator.hasNext()) {
-                    return iterator.next();
-                } else {
-                    throw new NoSuchElementException("No MountBuilder provider available!");
-                }
-            }
-            return i;
-        });
-    }
 }
