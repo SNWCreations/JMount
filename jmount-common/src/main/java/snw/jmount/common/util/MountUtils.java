@@ -17,8 +17,17 @@
 package snw.jmount.common.util;
 
 import snw.jmount.Mount;
+import snw.jmount.annotation.AccessField;
 import snw.jmount.annotation.MountPoint;
+import snw.jmount.annotation.Redirect;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import static snw.jmount.common.util.ReflectUtils.matchMethod;
 import static snw.jmount.common.util.ReflectUtils.perform;
 
 /**
@@ -53,6 +62,16 @@ public final class MountUtils {
     }
 
     /**
+     * Check if the method is a field accessor.
+     *
+     * @param method The method to be checked
+     * @return True if it is a field accessor
+     */
+    public static boolean isFieldAccessor(Method method) {
+        return method.isAnnotationPresent(AccessField.class);
+    }
+
+    /**
      * Convert the provided class into the underlying type if needed.
      *
      * @param maybeMP The class will be converted
@@ -79,5 +98,47 @@ public final class MountUtils {
         final String pattern = annotation.value();
         final String transformedName = mount.nameTransformer().transformClassName(pattern);
         return perform(() -> Class.forName(transformedName, false, mount.classLoader()));
+    }
+
+    /**
+     * Convert all classes in the provided array into origin classes.
+     *
+     * @param mount The mount object used for looking up the underlying class
+     * @param classes The classes to be converted
+     * @return The converted classes
+     */
+    public static Class<?>[] convert(Mount mount, Class<?>... classes) {
+        List<Class<?>> list = new ArrayList<>(classes.length);
+        for (Class<?> clazz : classes) {
+            list.add(convertOrReturn(clazz, mount));
+        }
+        return list.toArray(new Class[0]);
+    }
+
+    /**
+     * Look up a method matches the underlying class.
+     *
+     * @param method The method from Mount Point
+     * @param mount The mount object used for looking up the underlying class
+     * @return The method matches the requirement of the provided method
+     * @throws NoSuchElementException See {@link ReflectUtils#matchMethod}
+     */
+    public static Method convertMethod(Method method, Mount mount) throws NoSuchElementException {
+        Class<?> underlyingClazz = mount.findOriginClass(method.getDeclaringClass());
+        String methodName;
+        if (method.isAnnotationPresent(Redirect.class)) {
+            methodName = method.getAnnotation(Redirect.class).value();
+        } else {
+            methodName = method.getName();
+        }
+        methodName = mount.nameTransformer().transformMethodName(
+                underlyingClazz.getName(), methodName,
+                convert(mount, method.getParameterTypes())
+        );
+        Parameter[] parameterTypes = method.getParameters();
+        Class<?> returnType = method.getReturnType();
+        return matchMethod(
+                underlyingClazz, methodName, parameterTypes, returnType, mount
+        );
     }
 }

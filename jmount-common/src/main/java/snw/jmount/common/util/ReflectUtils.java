@@ -121,6 +121,34 @@ public final class ReflectUtils {
      * Check if the classes in {@code classes} array is compatible with the classes in {@code anotherClassArray}.
      *
      * @param classes The classes as the comparison source
+     * @param paramArray The classes to be checked, it can contain Mount Points
+     * @param mount The {@link Mount} for looking up the underlying class
+     * @return True if compatible
+     * @throws IllegalArgumentException Thrown if the length of two arrays is not equal
+     */
+    public static boolean isCompatible(Class<?>[] classes, Parameter[] paramArray, Mount mount)
+            throws IllegalArgumentException
+    {
+        if (classes.length != paramArray.length) {
+            throw new IllegalArgumentException("Length is not equal");
+        }
+        for (int i = 0; i < classes.length; i++) {
+            final Parameter paramTypeFromArgs = paramArray[i];
+            if (paramTypeFromArgs.isAnnotationPresent(RuntimeType.class)) {
+                continue;
+            }
+            final Class<?> paramType = classes[i];
+            if (!paramType.isAssignableFrom(convertOrReturn(paramTypeFromArgs.getType(), mount))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Check if the classes in {@code classes} array is compatible with the classes in {@code anotherClassArray}.
+     *
+     * @param classes The classes as the comparison source
      * @param anotherClassArray The classes to be checked, it can contain Mount Points
      * @param mount The {@link Mount} for looking up the underlying class
      * @return True if compatible
@@ -215,5 +243,26 @@ public final class ReflectUtils {
      */
     public static String toParamSignature(Class<?>... argTypes) {
         return Arrays.stream(argTypes).map(Class::getTypeName).collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Joining the provided argument type into a string.
+     *
+     * @param parameters An array of the {@link Parameter} objects
+     * @return The string
+     */
+    public static String toParamSignature(Parameter... parameters) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append('(');
+        sb.append(
+                Arrays.stream(parameters).map(i -> {
+                    if (i.isAnnotationPresent(RuntimeType.class)) {
+                        return "@RuntimeType " + i;
+                    }
+                    return i.getType().getName();
+                }).collect(Collectors.joining(", "))
+        );
+        sb.append(')');
+        return sb.toString();
     }
 }

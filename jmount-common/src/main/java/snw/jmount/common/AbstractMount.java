@@ -66,4 +66,11 @@ public abstract class AbstractMount implements Mount {
     public <T> ConstructorMP<T> findConstructorAndWrapAsMP(Class<T> mp, Class<?>... argTypes) throws NoSuchElementException, IllegalArgumentException {
         return new ConstructorMPImpl<>(this, mp, findConstructorAndWrap(findOriginClass(mp), argTypes));
     }
+
+    /**
+     * Check if the class is a valid Mount Point.
+     *
+     * @param mp A Mount Point interface class
+     */
+    protected abstract void verify(Class<?> mp);
 }
