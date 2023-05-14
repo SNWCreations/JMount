@@ -171,7 +171,7 @@ public final class MountUtils {
      * @return The converted object if the provided object is a Mount Point instance, or the {@code maybeMP} itself
      */
     public static Object convertOrReturn(Object maybeMP, Mount mount) {
-        if (!isMP(maybeMP.getClass())) {
+        if (!mount.isMount(maybeMP)) {
             return maybeMP;
         }
         return mount.unmount(maybeMP);
