@@ -44,7 +44,7 @@ public abstract class AbstractMount implements Mount {
     protected final NameTransformer nameTransformer;
     protected final ClassLoader classLoader;
 
-    public AbstractMount(AbstractMountBuilder builder) {
+    protected AbstractMount(AbstractMountBuilder builder) {
         this.nameTransformer = builder.nameTransformer;
         this.classLoader = builder.classLoader;
     }
