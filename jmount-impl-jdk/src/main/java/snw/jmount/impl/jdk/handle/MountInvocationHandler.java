@@ -16,8 +16,8 @@
 
 package snw.jmount.impl.jdk.handle;
 
-import snw.jmount.Mount;
 import snw.jmount.common.handle.Invoker;
+import snw.jmount.impl.jdk.JDKMount;
 
 import java.lang.reflect.InvocationHandler;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class MountInvocationHandler extends Invoker implements InvocationHandler {
 
-    public MountInvocationHandler(Mount mount, Object origin) {
+    public MountInvocationHandler(JDKMount mount, Object origin) {
         super(mount, new AtomicReference<>(origin));
     }
 
