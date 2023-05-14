@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package snw.jmount.common.testobjects.origin;
-
-public class Something {
-    private final int var0 = 0;
-    public Object object = new Object();
-
-    public void doSomething() {
-        // work logic goes here
-    }
-}
+/**
+ * The JMount library implementation - ByteBuddy based
+ *
+ * @author SNWCreations
+ * @since 0.1.0
+ */
+package snw.jmount.impl.bytebuddy;

@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package snw.jmount.common.testobjects.mp;
+package snw.jmount.impl.bytebuddy;
 
-import snw.jmount.annotation.AccessField;
-import snw.jmount.annotation.MountPoint;
-import snw.jmount.handle.FieldAccessor;
+import snw.jmount.Mount;
+import snw.jmount.common.AbstractMountBuilder;
 
-@MountPoint("snw.jmount.common.testobjects.origin.Something")
-public interface SomethingMP {
-    @AccessField
-    FieldAccessor<Object> object();
-
-    @AccessField("var0")
-    int getVar0();
-
-    void doSomething(); // matches Something#doSomething
+/**
+ * The {@link snw.jmount.MountBuilder} implementation in ByteBuddy implementation module.
+ *
+ * @author SNWCreations
+ * @since 0.1.0
+ */
+public class ByteBuddyMountBuilder extends AbstractMountBuilder {
+    @Override
+    protected Mount build0() {
+        return new ByteBuddyMount(this);
+    }
 }
