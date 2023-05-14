@@ -17,12 +17,13 @@
 package snw.jmount.impl.jdk.handle;
 
 import snw.jmount.Mount;
+import snw.jmount.common.handle.MethodHandleBasedFieldAccessor;
 import snw.jmount.common.util.UncheckedFunction;
+import snw.jmount.handle.FieldAccessor;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +31,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static snw.jmount.common.util.MountUtils.*;
+import static snw.jmount.common.util.ReflectUtils.lookUpField;
 import static snw.jmount.common.util.ReflectUtils.perform;
 
 /**
@@ -61,6 +63,9 @@ public class MountInvocationHandler implements InvocationHandler {
     }
 
     private UncheckedFunction<Object[], Object> generate(Method method) {
+        if (isFieldAccessor(method)) {
+            return generateFieldAccessor(method);
+        }
         final Method underlyingMethod = convertMethod(method, mount);
         underlyingMethod.setAccessible(true);
         final Class<?>[] paramTypes = method.getParameterTypes();
@@ -84,5 +89,35 @@ public class MountInvocationHandler implements InvocationHandler {
             }
             return o;
         };
+    }
+
+    private UncheckedFunction<Object[], Object> generateFieldAccessor(Method method) {
+        final Field field = lookUpField(
+                mount.findOriginClass(method.getDeclaringClass()),
+                getTargetFieldNameWithPattern(method),
+                mount
+        );
+        final Type genericType = method.getGenericReturnType();
+        if (genericType instanceof ParameterizedType) { // require FieldAccessor
+            if (((ParameterizedType) genericType).getRawType() == FieldAccessor.class) {
+                Class<?> type = ((Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[0]);
+                final MethodHandleBasedFieldAccessor<?> accessor = new MethodHandleBasedFieldAccessor<>(mount, origin, type, field);
+                return args -> accessor;
+            }
+        }
+        if (method.getReturnType() == void.class) { // setter
+            final MethodHandleBasedFieldAccessor<?> accessor = new MethodHandleBasedFieldAccessor<>(mount, origin, null, field);
+            return args -> {
+                accessor.set(args[0]);
+                return null;
+            };
+        }
+
+        Class<?> type = method.getReturnType();
+        final MethodHandleBasedFieldAccessor<?> accessor = new MethodHandleBasedFieldAccessor<>(mount, origin, type, field);
+        if (isMP(method.getReturnType())) {
+            return args -> accessor.getMounted();
+        }
+        return args -> accessor.get();
     }
 }
