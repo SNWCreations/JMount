@@ -20,7 +20,7 @@ import snw.jmount.annotation.AccessField;
 import snw.jmount.annotation.MountPoint;
 import snw.jmount.handle.FieldAccessor;
 
-@MountPoint("snw.jmount.common.testobjects.testobjects.Something")
+@MountPoint("snw.jmount.common.testobjects.Something")
 public interface SomethingMP {
     @AccessField
     FieldAccessor<Object> object();
