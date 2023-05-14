@@ -19,7 +19,7 @@ package snw.jmount.impl.jdk.testobjects.origin;
 public class Something {
     private final int var0 = 0;
     public Object object = new Object();
-    public AnotherThing anotherThing;
+    public final AnotherThing anotherThing;
 
     public Something() {
         this(new AnotherThing());
