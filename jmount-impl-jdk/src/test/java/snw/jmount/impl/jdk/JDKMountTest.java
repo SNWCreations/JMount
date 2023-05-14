@@ -23,6 +23,12 @@ import snw.jmount.MountBuilder;
 import snw.jmount.handle.ConstructorMP;
 import snw.jmount.handle.WrappedConstructor;
 import snw.jmount.impl.jdk.testobjects.*;
+import snw.jmount.impl.jdk.testobjects.mp.AnEnumMP;
+import snw.jmount.impl.jdk.testobjects.mp.AnotherThingMP;
+import snw.jmount.impl.jdk.testobjects.mp.SomethingMP;
+import snw.jmount.impl.jdk.testobjects.origin.AnEnum;
+import snw.jmount.impl.jdk.testobjects.origin.AnotherThing;
+import snw.jmount.impl.jdk.testobjects.origin.Something;
 
 import java.lang.reflect.Constructor;
 

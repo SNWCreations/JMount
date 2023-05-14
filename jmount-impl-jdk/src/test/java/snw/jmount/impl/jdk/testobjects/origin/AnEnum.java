@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package snw.jmount.impl.jdk.testobjects;
+package snw.jmount.impl.jdk.testobjects.origin;
 
-import snw.jmount.annotation.AccessField;
-import snw.jmount.annotation.MountPoint;
+public enum AnEnum {
+    A("A"), B("B");
 
-@MountPoint("snw.jmount.impl.jdk.testobjects.AnotherThing")
-public interface AnotherThingMP {
-    @AccessField("a")
-    int getA();
+    private final String str;
+
+    AnEnum(String str) {
+        this.str = str;
+    }
+
+    public String getStr() {
+        return str;
+    }
 }

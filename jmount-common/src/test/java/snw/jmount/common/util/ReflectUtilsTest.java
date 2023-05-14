@@ -18,8 +18,8 @@ package snw.jmount.common.util;
 
 import org.junit.jupiter.api.Test;
 import snw.jmount.common.exceptions.ReflectOperationException;
-import snw.jmount.common.testobjects.Something;
-import snw.jmount.common.testobjects.SomethingMP;
+import snw.jmount.common.testobjects.origin.Something;
+import snw.jmount.common.testobjects.mp.SomethingMP;
 
 import java.lang.reflect.Field;
 

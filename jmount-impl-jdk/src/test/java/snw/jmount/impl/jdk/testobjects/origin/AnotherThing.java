@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package snw.jmount.impl.jdk.testobjects;
+package snw.jmount.impl.jdk.testobjects.origin;
 
-public class Something {
-    private final int var0 = 0;
-    public Object object = new Object();
-    public AnotherThing anotherThing;
+public class AnotherThing {
+    public int a = 0;
 
-    public Something() {
-        this(new AnotherThing());
+    public AnotherThing() {
     }
 
-    public Something(AnotherThing thing) {
-        this.anotherThing = thing;
-    }
-
-    public void doSomething() {
-        // work logic goes here
+    public AnotherThing(int a) {
+        this.a = a;
     }
 }

@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package snw.jmount.common.testobjects;
+package snw.jmount.common.testobjects.mp;
 
-public class Something {
-    private final int var0 = 0;
-    public Object object = new Object();
+import snw.jmount.annotation.AccessField;
+import snw.jmount.annotation.MountPoint;
+import snw.jmount.handle.FieldAccessor;
 
-    public void doSomething() {
-        // work logic goes here
-    }
+@MountPoint("snw.jmount.common.testobjects.origin.Something")
+public interface SomethingMP {
+    @AccessField
+    FieldAccessor<Object> object();
+
+    @AccessField("var0")
+    int getVar0();
+
+    void doSomething(); // matches Something#doSomething
 }

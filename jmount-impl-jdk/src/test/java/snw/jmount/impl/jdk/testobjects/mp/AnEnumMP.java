@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package snw.jmount.impl.jdk.testobjects;
+package snw.jmount.impl.jdk.testobjects.mp;
 
 import snw.jmount.annotation.MountPoint;
 
-@MountPoint("snw.jmount.impl.jdk.testobjects.AnEnum")
+@MountPoint("snw.jmount.impl.jdk.testobjects.origin.AnEnum")
 public interface AnEnumMP {
     AnEnumMP A = null;
     AnEnumMP B = null;
