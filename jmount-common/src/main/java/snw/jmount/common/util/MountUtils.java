@@ -231,9 +231,10 @@ public final class MountUtils {
             Object object = objects[i];
             Object adding = null;
             if (object != null) {
-                if (isMP(object.getClass())) {
-                    if (argTypes[i].isAssignableFrom(mount.findOriginClass(object.getClass()))){
-                        adding = mount.unmount(object);
+                if (mount.isMount(object)) {
+                    final Object unmount = mount.unmount(object);
+                    if (argTypes[i].isAssignableFrom(unmount.getClass())){
+                        adding = unmount;
                     } else {
                         throw new IllegalArgumentException(
                                 "Provided object is not compatible with the provided argument types"
