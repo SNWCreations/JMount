@@ -71,6 +71,23 @@ public final class MountUtils {
     }
 
     /**
+     * Get the target field name of the provided method, but not converted yet. (known it is field accessor)
+     *
+     * @param m The field accessor method
+     * @return The field name with pattern
+     */
+    public static String getTargetFieldNameWithPattern(Method m) {
+        if (!isFieldAccessor(m)) {
+            throw new IllegalArgumentException(m + " is not a field accessor");
+        }
+        String fieldName = m.getAnnotation(AccessField.class).value();
+        if (fieldName == null || fieldName.isEmpty()) {
+            fieldName = m.getName();
+        }
+        return fieldName;
+    }
+
+    /**
      * Check the provided method if it is a valid field accessor and do nothing, otherwise this method fails.
      *
      * @param m The method to be checked
@@ -82,16 +99,9 @@ public final class MountUtils {
         }
         final Class<?> underlyingClass = mount.findOriginClass(m.getDeclaringClass());
 
-        String fieldName = m.getAnnotation(AccessField.class).value();
-        if (fieldName == null || fieldName.isEmpty()) {
-            fieldName = m.getName();
-        }
-        fieldName = mount.nameTransformer().transformFieldName(
-                underlyingClass.getName(), fieldName
-        );
-        final String finalFieldName = fieldName;
+        final String fieldNameWithPattern = getTargetFieldNameWithPattern(m);
 
-        final Field underlyingField = perform(() -> underlyingClass.getDeclaredField(finalFieldName));
+        final Field underlyingField = lookUpField(underlyingClass, fieldNameWithPattern, mount);
 
         final Type returnType = m.getGenericReturnType();
         if (returnType instanceof ParameterizedType) {
