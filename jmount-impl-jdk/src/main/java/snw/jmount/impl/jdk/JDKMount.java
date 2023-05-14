@@ -51,4 +51,9 @@ public class JDKMount extends AbstractMount {
         return ((MountInvocationHandler) Proxy.getInvocationHandler(mp)).getOrigin();
     }
 
+    @Override
+    public boolean isMount(Object mp) {
+        return Proxy.isProxyClass(mp.getClass()) && Proxy.getInvocationHandler(mp) instanceof MountInvocationHandler;
+    }
+
 }

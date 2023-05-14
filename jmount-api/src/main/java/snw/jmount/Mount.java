@@ -54,6 +54,14 @@ public interface Mount {
     Object unmount(Object mp) throws IllegalArgumentException;
 
     /**
+     * Check if the provided object is a Mount Point instance.
+     *
+     * @param mp The object
+     * @return True if the provided is a Mount Point instance
+     */
+    boolean isMount(Object mp);
+
+    /**
      * Find the underlying class of the provided Mount Point type.
      *
      * @param mp The class object of the Mount Point type
