@@ -302,8 +302,14 @@ public final class ReflectUtils {
         if (underlyingObject != null && !field.getDeclaringClass().isAssignableFrom(underlyingObject.getClass())) {
             throw new IllegalArgumentException("The underlying type of the provided field is not compatible with the provided target object type");
         }
+        if (!field.isAccessible()) {
+            perform(() -> {
+                field.setAccessible(true);
+                return null;
+            });
+        }
         if (Modifier.isFinal(field.getModifiers())) {
-            perform(() -> FIELD_MODIFIER_HANDLE.invokeExact(field, field.getModifiers() & ~Modifier.FINAL));
+            perform(() -> FIELD_MODIFIER_HANDLE.invoke(field, field.getModifiers() & ~Modifier.FINAL));
         }
         perform(() -> {
             field.set(underlyingObject, newValue);
