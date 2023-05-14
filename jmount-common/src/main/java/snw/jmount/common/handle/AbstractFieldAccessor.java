@@ -43,9 +43,9 @@ public abstract class AbstractFieldAccessor<T> implements FieldAccessor<T> {
             @Nullable Object underlyingObject, @Nullable Class<T> mountType,
             Field field
     ) {
-        if (!field.getDeclaringClass().isAssignableFrom(mount.findOriginClass(mountType))) {
+        if (!field.getType().isAssignableFrom(convertOrReturn(mountType, mount))) {
             throw new IllegalArgumentException(
-                    "The declaring class of the field is not compatible with the provided Mount Point type"
+                    "The type of the field is not compatible with the provided Mount Point type"
             );
         }
         this.mount = mount;
