@@ -33,7 +33,6 @@ import snw.jmount.impl.jdk.testobjects.origin.Something;
 import java.lang.reflect.Constructor;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static snw.jmount.common.util.ReflectUtils.perform;
 
 public class JDKMountTest {
@@ -49,10 +48,10 @@ public class JDKMountTest {
 
     @Test
     void accessTest() {
-
         final Something underlying = new Something();
         SomethingMP mp = mount.mount(SomethingMP.class, underlying);
         assertEquals(underlying.object, mp.object().get());
+        assertDoesNotThrow(() -> mp.object().set(new Object()));
         assertEquals(0, mp.getVar0());
         assertEquals(0, mp.anotherThing().getMounted().getA());
     }
