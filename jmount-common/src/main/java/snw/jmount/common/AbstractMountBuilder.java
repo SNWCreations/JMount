@@ -16,6 +16,7 @@
 
 package snw.jmount.common;
 
+import snw.jmount.Mount;
 import snw.jmount.MountBuilder;
 import snw.jmount.NameTransformer;
 
@@ -43,4 +44,12 @@ public abstract class AbstractMountBuilder implements MountBuilder {
         return this;
     }
 
+    @Override
+    public Mount build() {
+        Objects.requireNonNull(this.nameTransformer, "Name transformer cannot be null");
+        Objects.requireNonNull(this.classLoader, "ClassLoader cannot be null");
+        return build0();
+    }
+
+    protected abstract Mount build0();
 }

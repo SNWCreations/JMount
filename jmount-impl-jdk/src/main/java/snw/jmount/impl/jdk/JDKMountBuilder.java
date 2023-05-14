@@ -27,7 +27,7 @@ import snw.jmount.common.AbstractMountBuilder;
  */
 public class JDKMountBuilder extends AbstractMountBuilder {
     @Override
-    public Mount build() {
+    protected Mount build0() {
         return new JDKMount(this);
     }
 }
