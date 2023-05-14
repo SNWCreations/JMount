@@ -221,7 +221,7 @@ public final class MountUtils {
      * Convert all objects in the provided array into origin ones.
      *
      * @param mount The mount object used for looking up the underlying class
-     * @param argTypes The argument type for checking
+     * @param argTypes The argument type for converting
      * @param objects The objects to be converted
      * @return The converted objects
      */
