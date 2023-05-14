@@ -99,7 +99,7 @@ public final class MountUtils {
             if (parameterizedType.getOwnerType() == FieldAccessor.class) {
                 final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
                 if (actualTypeArguments.length != 1) {
-                    invalidFieldAccessor(m, "impossible: parameterized type detected, but argument length is not equals to 1");
+                    invalidFieldAccessor(m, "impossible: FieldAccessor detected, but argument length is not equals to 1");
                 }
                 final Type actualTypeArgument = actualTypeArguments[0];
                 if (actualTypeArgument instanceof Class) {
