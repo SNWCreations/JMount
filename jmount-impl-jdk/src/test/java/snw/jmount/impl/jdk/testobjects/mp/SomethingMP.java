@@ -18,6 +18,7 @@ package snw.jmount.impl.jdk.testobjects.mp;
 
 import snw.jmount.annotation.AccessField;
 import snw.jmount.annotation.MountPoint;
+import snw.jmount.annotation.Redirect;
 import snw.jmount.handle.FieldAccessor;
 
 @MountPoint("snw.jmount.impl.jdk.testobjects.origin.Something")
@@ -32,4 +33,7 @@ public interface SomethingMP {
     FieldAccessor<AnotherThingMP> anotherThing();
 
     void doSomething(); // matches Something#doSomething
+
+    @Redirect("doSomething")
+    void anotherRefToDoSomething();
 }

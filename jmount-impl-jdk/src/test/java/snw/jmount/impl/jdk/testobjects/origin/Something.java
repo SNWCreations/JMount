@@ -20,6 +20,7 @@ public class Something {
     private final int var0 = 0;
     public Object object = new Object();
     public final AnotherThing anotherThing;
+    public boolean did = false;
 
     public Something() {
         this(new AnotherThing());
@@ -30,6 +31,7 @@ public class Something {
     }
 
     public void doSomething() {
+        did = !did;
         // work logic goes here
     }
 }

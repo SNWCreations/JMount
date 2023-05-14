@@ -54,6 +54,12 @@ public class JDKMountTest {
         assertDoesNotThrow(() -> mp.object().set(new Object()));
         assertEquals(0, mp.getVar0());
         assertEquals(0, mp.anotherThing().getMounted().getA());
+
+        assertFalse(underlying.did);
+        mp.doSomething();
+        assertTrue(underlying.did);
+        mp.anotherRefToDoSomething();
+        assertFalse(underlying.did);
     }
 
     @Test
