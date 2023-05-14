@@ -27,8 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static snw.jmount.common.util.ReflectUtils.matchMethod;
-import static snw.jmount.common.util.ReflectUtils.perform;
+import static snw.jmount.common.util.ReflectUtils.*;
 
 /**
  * A set of utility methods related to {@link Mount} logics.
@@ -117,6 +116,7 @@ public final class MountUtils {
                         invalidFieldAccessor(m, "field accessors only accepts Mount Point types, primitive types or ? as its type variable");
                     }
                 }
+                return; // valid FieldAccessor, prevent return type check
             }
         } else if (returnType == void.class) {
             if (m.getParameterCount() == 0) {
@@ -126,17 +126,17 @@ public final class MountUtils {
             } else if (!underlyingField.getType().isAssignableFrom(convertOrReturn(m.getParameterTypes()[0], mount))) {
                 invalidFieldAccessor(m, "not a valid setter, the provided type is not compatible with underlying type");
             }
-        } else {
-            final Class<?> returnTypeAsClass = (Class<?>) returnType;
-            final Class<?> ourReturnType = convertOrReturn(returnTypeAsClass, mount);
-            final Class<?> realReturnType = underlyingField.getType();
-            if (!ourReturnType.isAssignableFrom(realReturnType)) {
-                invalidFieldAccessor(
-                        m, "underlying field type " + realReturnType
-                                + " is not compatible with the declared type (" + ourReturnType
-                                + ") of the accessor"
-                );
-            }
+            return;
+        }
+
+        final Class<?> ourReturnType = convertOrReturn(m.getReturnType(), mount);
+        final Class<?> realReturnType = underlyingField.getType();
+        if (!ourReturnType.isAssignableFrom(realReturnType)) {
+            invalidFieldAccessor(
+                    m, "underlying field type " + realReturnType
+                            + " is not compatible with the declared type (" + ourReturnType
+                            + ") of the accessor"
+            );
         }
     }
 
