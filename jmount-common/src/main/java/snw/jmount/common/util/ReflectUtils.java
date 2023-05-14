@@ -21,10 +21,9 @@ import snw.jmount.Mount;
 import snw.jmount.annotation.RuntimeType;
 import snw.jmount.common.exceptions.ReflectOperationException;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -41,6 +40,18 @@ import static snw.jmount.common.util.MountUtils.convertOrReturn;
  * @since 0.1.0
  */
 public final class ReflectUtils {
+    /* The setter handle of Field#modifiers */
+    private static final MethodHandle FIELD_MODIFIER_HANDLE;
+
+    static {
+        try {
+            final Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            FIELD_MODIFIER_HANDLE = MethodHandles.lookup().unreflectSetter(modifiersField);
+        } catch (Throwable e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     // You should NOT call constructor.
     private ReflectUtils() {
@@ -278,5 +289,25 @@ public final class ReflectUtils {
         final String fieldName =
                 mount.nameTransformer().transformFieldName(underlyingClass.getName(), fieldNameWithPattern);
         return perform(() -> underlyingClass.getDeclaredField(fieldName));
+    }
+
+    /**
+     * Force put the provided new value to the provided field even if the field is marked as final.
+     *
+     * @param underlyingObject The underlying object as the field owner
+     * @param field The field
+     * @param newValue The new value
+     */
+    public static void forceSet(@Nullable Object underlyingObject, Field field, Object newValue) {
+        if (underlyingObject != null && !field.getDeclaringClass().isAssignableFrom(underlyingObject.getClass())) {
+            throw new IllegalArgumentException("The underlying type of the provided field is not compatible with the provided target object type");
+        }
+        if (Modifier.isFinal(field.getModifiers())) {
+            perform(() -> FIELD_MODIFIER_HANDLE.invokeExact(field, field.getModifiers() & ~Modifier.FINAL));
+        }
+        perform(() -> {
+            field.set(underlyingObject, newValue);
+            return null;
+        });
     }
 }
