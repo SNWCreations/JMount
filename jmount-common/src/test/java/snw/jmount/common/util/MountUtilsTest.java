@@ -17,8 +17,8 @@
 package snw.jmount.common.util;
 
 import org.junit.jupiter.api.Test;
-import snw.jmount.testobjects.Something;
-import snw.jmount.testobjects.SomethingMP;
+import snw.jmount.common.testobjects.Something;
+import snw.jmount.common.testobjects.SomethingMP;
 
 import java.lang.reflect.Method;
 
