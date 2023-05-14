@@ -104,8 +104,8 @@ public final class MountUtils {
                 }
                 final Type actualTypeArgument = actualTypeArguments[0];
                 if (actualTypeArgument instanceof Class) {
-                    if (!isMP((Class<?>) actualTypeArgument)) {
-                        invalidFieldAccessor(m, "field accessors only accepts Mount Point types or ? as its type variable");
+                    if (!isMP((Class<?>) actualTypeArgument) && !((Class<?>) actualTypeArgument).isPrimitive()) {
+                        invalidFieldAccessor(m, "field accessors only accepts Mount Point types, primitive types or ? as its type variable");
                     }
                 } else if (actualTypeArgument instanceof WildcardType) {
                     final WildcardType wildcardType = (WildcardType) actualTypeArgument;
@@ -114,7 +114,7 @@ public final class MountUtils {
                                     wildcardType.getUpperBounds().length == 1 &&
                                     wildcardType.getUpperBounds()[0] == Object.class
                             )) {
-                        invalidFieldAccessor(m, "field accessors only accepts Mount Point types or ? as its type variable");
+                        invalidFieldAccessor(m, "field accessors only accepts Mount Point types, primitive types or ? as its type variable");
                     }
                 }
             }
