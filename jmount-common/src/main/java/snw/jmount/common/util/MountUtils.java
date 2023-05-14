@@ -96,14 +96,14 @@ public final class MountUtils {
         final Type returnType = m.getGenericReturnType();
         if (returnType instanceof ParameterizedType) {
             final ParameterizedType parameterizedType = (ParameterizedType) returnType;
-            if (parameterizedType.getOwnerType() == FieldAccessor.class) {
+            if (parameterizedType.getRawType() == FieldAccessor.class) {
                 final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
                 if (actualTypeArguments.length != 1) {
                     invalidFieldAccessor(m, "impossible: FieldAccessor detected, but argument length is not equals to 1");
                 }
                 final Type actualTypeArgument = actualTypeArguments[0];
                 if (actualTypeArgument instanceof Class) {
-                    if (!isMP((Class<?>) actualTypeArgument) && !((Class<?>) actualTypeArgument).isPrimitive()) {
+                    if (!convertOrReturn(((Class<?>) actualTypeArgument), mount).isAssignableFrom(underlyingField.getType())) {
                         invalidFieldAccessor(m, "field accessors only accepts Mount Point types, primitive types or ? as its type variable");
                     }
                 } else if (actualTypeArgument instanceof WildcardType) {
