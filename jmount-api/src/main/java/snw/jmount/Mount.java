@@ -70,6 +70,17 @@ public interface Mount {
      */
     Class<?> findOriginClass(Class<?> mp) throws IllegalArgumentException;
 
+    /**
+     * Create Mount Point instances for the declared fields in the provided Mount Point interface. <br>
+     *
+     * The underlying class of the provided class should be an enum type.
+     *
+     * @param enumMPClazz The Mount Point type
+     * @throws IllegalArgumentException Thrown if the underlying class is not an enum type
+     * @throws NoSuchElementException Thrown if detected unknown constant name in the provided class
+     */
+    void fillEnum(Class<?> enumMPClazz) throws IllegalArgumentException, NoSuchElementException;
+
     // -- Field --
 
     /**
