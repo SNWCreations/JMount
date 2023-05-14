@@ -201,7 +201,7 @@ public final class ReflectUtils {
      */
     public static Method[] getAllMethods(Class<?> clazz, @Nullable Predicate<Method> condition) {
         Collection<Method> methods = new LinkedList<>();
-        while (clazz != Object.class) { // do not look for methods in Object
+        while (clazz != null) { // do not look for methods in Object
             for (Method m : clazz.getDeclaredMethods()) {
                 if (condition == null || condition.test(m)) {
                     methods.add(m);
