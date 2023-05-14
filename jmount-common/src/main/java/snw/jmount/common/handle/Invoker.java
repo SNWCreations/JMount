@@ -35,7 +35,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static snw.jmount.common.util.MountUtils.*;
-import static snw.jmount.common.util.MountUtils.isMP;
 import static snw.jmount.common.util.ReflectUtils.lookUpField;
 import static snw.jmount.common.util.ReflectUtils.perform;
 
