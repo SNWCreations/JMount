@@ -68,6 +68,14 @@ public class MethodHandleBasedFieldAccessor<T> extends AbstractFieldAccessor<T> 
 
     @Override
     protected void set0(Object newValue) {
-        perform(() -> setter.invoke(convertOrReturn(newValue, mount)));
+        perform(() -> {
+            final Object actualNewValue = convertOrReturn(newValue, mount);
+            if (underlyingObject == null) {
+                setter.invoke(null, actualNewValue);
+            } else {
+                setter.invoke(actualNewValue);
+            }
+            return null;
+        });
     }
 }
