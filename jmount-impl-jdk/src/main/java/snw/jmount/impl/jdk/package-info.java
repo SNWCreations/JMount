@@ -14,20 +14,9 @@
  * limitations under the License.
  */
 
-package snw.jmount.impl.jdk;
-
-import snw.jmount.Mount;
-import snw.jmount.common.AbstractMountBuilder;
-
 /**
- * The {@link AbstractMountBuilder} implementation for the pure-JDK-based implementation.
+ * The JMount library implementation - Pure JDK based
  *
- * @author SNWCreations
  * @since 0.1.0
  */
-public class JDKMountBuilder extends AbstractMountBuilder {
-    @Override
-    public Mount build() {
-        return new JDKMount(this);
-    }
-}
+package snw.jmount.impl.jdk;

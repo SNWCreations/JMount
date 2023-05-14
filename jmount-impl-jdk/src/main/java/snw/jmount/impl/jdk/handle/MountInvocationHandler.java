@@ -32,6 +32,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import static snw.jmount.common.util.MountUtils.*;
 import static snw.jmount.common.util.ReflectUtils.perform;
 
+/**
+ * The {@link InvocationHandler} implementation for handling Mount Point interface method calls.
+ *
+ * @author SNWCreations
+ * @since 0.1.0
+ */
 public class MountInvocationHandler implements InvocationHandler {
     protected final Mount mount;
     protected final Object origin;

@@ -20,6 +20,12 @@ import snw.jmount.MountBuilder;
 import snw.jmount.impl.jdk.JDKMountBuilder;
 import snw.jmount.spi.MountBuilderProvider;
 
+/**
+ * The {@link MountBuilderProvider} implementation for the pure-JDK-based implementation.
+ *
+ * @author SNWCreations
+ * @since 0.1.0
+ */
 public class JDKMountBuilderProvider implements MountBuilderProvider {
     @Override
     public MountBuilder create() {
