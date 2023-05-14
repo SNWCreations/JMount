@@ -253,7 +253,7 @@ public final class ReflectUtils {
      * @return The string
      */
     public static String toParamSignature(Class<?>... argTypes) {
-        return Arrays.stream(argTypes).map(Class::getTypeName).collect(Collectors.joining(", "));
+        return '(' + Arrays.stream(argTypes).map(Class::getTypeName).collect(Collectors.joining(", ")) + ')';
     }
 
     /**
