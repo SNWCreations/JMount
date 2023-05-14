@@ -40,7 +40,8 @@ public abstract class AbstractFieldAccessor<T> implements FieldAccessor<T> {
 
     protected AbstractFieldAccessor(
             Mount mount,
-            @Nullable Object underlyingObject, @Nullable Class<T> mountType,
+            @Nullable Object underlyingObject,
+            @Nullable Class<T> mountType,
             Field field
     ) {
         if (!field.getType().isAssignableFrom(convertOrReturn(mountType, mount))) {
