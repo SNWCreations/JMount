@@ -119,8 +119,10 @@ public final class ReflectUtils {
         final Constructor<?>[] constructors = originClazz.getDeclaredConstructors();
         for (Constructor<?> constructor : constructors) {
             final Class<?>[] parameterTypes = constructor.getParameterTypes();
-            if (isCompatible(parameterTypes, argTypes, mount)) {
-                return constructor;
+            if (parameterTypes.length == argTypes.length) {
+                if (isCompatible(parameterTypes, argTypes, mount)) {
+                    return constructor;
+                }
             }
         }
         throw new NoSuchElementException(
