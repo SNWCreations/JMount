@@ -28,12 +28,12 @@ import snw.jmount.handle.WrappedConstructor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static snw.jmount.common.util.MountUtils.*;
 import static snw.jmount.common.util.MountUtils.convertMethod;
-import static snw.jmount.common.util.ReflectUtils.lookUpConstructor;
-import static snw.jmount.common.util.ReflectUtils.lookUpField;
+import static snw.jmount.common.util.ReflectUtils.*;
 
 /**
  * A shared {@link snw.jmount.Mount} implementation with partly completed feature.
@@ -58,6 +58,37 @@ public abstract class AbstractMount implements Mount {
     @Override
     public ClassLoader classLoader() {
         return classLoader;
+    }
+
+    @Override
+    public void fillEnum(Class<?> enumMPClazz) throws IllegalArgumentException, NoSuchElementException {
+        checkIfIsMP(enumMPClazz);
+        final Class<?> originClass = findOriginClass(enumMPClazz);
+        if (!originClass.isEnum()) {
+            throw new IllegalArgumentException("The underlying class is not an enum");
+        }
+        @SuppressWarnings("rawtypes")
+        final Class<? extends Enum> asEnum = originClass.asSubclass(Enum.class);
+        final List<Field> toBeFilled =
+                Arrays.stream(enumMPClazz.getDeclaredFields())
+                        .filter(i -> i.getType() == enumMPClazz)
+                        .collect(Collectors.toList());
+        Map<Field, Object> dataPairs = new HashMap<>(toBeFilled.size()); // use Map to prevent broken result
+        for (Field field : toBeFilled) {
+            final String constantName = field.getName();
+            Object underlying;
+            try {
+                //noinspection unchecked
+                underlying = Enum.valueOf(asEnum, constantName);
+            } catch (IllegalArgumentException e) {
+                throw new NoSuchElementException("Cannot find constant " + constantName + " in " + originClass);
+            }
+            final Object mount = mount(enumMPClazz, underlying);
+            dataPairs.put(field, mount);
+        }
+        for (Map.Entry<Field, Object> entry : dataPairs.entrySet()) {
+            forceSet(null, entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
