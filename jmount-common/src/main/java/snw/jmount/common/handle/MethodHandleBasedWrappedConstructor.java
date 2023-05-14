@@ -16,22 +16,27 @@
 
 package snw.jmount.common.handle;
 
+import snw.jmount.Mount;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 
+import static snw.jmount.common.util.MountUtils.convert;
 import static snw.jmount.common.util.ReflectUtils.perform;
 
 public class MethodHandleBasedWrappedConstructor extends AbstractWrappedConstructor {
+    protected final Mount mount;
     protected final MethodHandle handle;
 
-    public MethodHandleBasedWrappedConstructor(Constructor<?> underlying) {
+    public MethodHandleBasedWrappedConstructor(Mount mount, Constructor<?> underlying) {
         super(underlying);
+        this.mount = mount;
         this.handle = perform(() -> MethodHandles.lookup().unreflectConstructor(underlying));
     }
 
     @Override
     public Object newInstance(Object... initArgs) {
-        return perform(() -> handle.invoke(initArgs));
+        return perform(() -> handle.invokeWithArguments(convert(mount, underlying.getParameterTypes(), initArgs)));
     }
 }

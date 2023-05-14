@@ -121,8 +121,8 @@ public abstract class AbstractMount implements Mount {
 
     @Override
     public WrappedConstructor findConstructorAndWrap(Class<?> originClazz, Class<?>... argTypes) throws NoSuchElementException {
-        final Constructor<?> constructor = lookUpConstructor(originClazz, argTypes, this);
-        return new MethodHandleBasedWrappedConstructor(constructor);
+        final Constructor<?> constructor = findConstructor(originClazz, argTypes);
+        return new MethodHandleBasedWrappedConstructor(this, constructor);
     }
 
 }
