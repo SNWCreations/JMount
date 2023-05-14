@@ -123,6 +123,8 @@ public final class MountUtils {
                 invalidFieldAccessor(m, "it is impossible to declare a field with void type");
             } else if (m.getParameterCount() != 1) {
                 invalidFieldAccessor(m, "not a valid setter, too many arguments");
+            } else if (!underlyingField.getType().isAssignableFrom(convertOrReturn(m.getParameterTypes()[0], mount))) {
+                invalidFieldAccessor(m, "not a valid setter, the provided type is not compatible with underlying type");
             }
         } else {
             final Class<?> returnTypeAsClass = (Class<?>) returnType;
