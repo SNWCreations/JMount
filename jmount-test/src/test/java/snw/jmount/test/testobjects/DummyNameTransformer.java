@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package snw.jmount.impl.jdk.testobjects;
+package snw.jmount.test.testobjects;
 
 import snw.jmount.NameTransformer;
 

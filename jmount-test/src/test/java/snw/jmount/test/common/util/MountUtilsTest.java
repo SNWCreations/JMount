@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package snw.jmount.common.util;
+package snw.jmount.test.common.util;
 
 import org.junit.jupiter.api.Test;
-import snw.jmount.common.testobjects.origin.Something;
-import snw.jmount.common.testobjects.mp.SomethingMP;
+import snw.jmount.test.testobjects.origin.Something;
+import snw.jmount.test.testobjects.mp.SomethingMP;
 
 import java.lang.reflect.Method;
 

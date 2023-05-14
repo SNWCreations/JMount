@@ -17,6 +17,7 @@
         <module>jmount-common</module>
         <module>jmount-impl-jdk</module>
         <module>jmount-impl-bytebuddy</module>
+        <module>jmount-test</module>
     </modules>
 
     <properties>

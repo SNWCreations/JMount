@@ -14,27 +14,22 @@
  * limitations under the License.
  */
 
-package snw.jmount.impl.jdk;
+package snw.jmount.test;
 
 import org.junit.jupiter.api.Test;
 import snw.jmount.Mount;
 import snw.jmount.MountBuilder;
-import snw.jmount.impl.jdk.testobjects.DummyNameTransformer;
+import snw.jmount.test.testobjects.DummyNameTransformer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JDKMountBuilderTest {
-
-    @Test
-    void isJDKBuilderTest() {
-        assertTrue(MountBuilder.create() instanceof JDKMountBuilder);
-    }
+public class MountBuilderTest {
 
     @Test
     void buildTest() {
         assertThrows(NullPointerException.class, () -> MountBuilder.create().build());
         assertDoesNotThrow(this::produce);
-        assertTrue(() -> produce() instanceof JDKMount);
     }
 
     private Mount produce() {

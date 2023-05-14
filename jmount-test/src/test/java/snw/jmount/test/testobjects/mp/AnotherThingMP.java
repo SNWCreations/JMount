@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package snw.jmount.impl.jdk.testobjects.mp;
+package snw.jmount.test.testobjects.mp;
 
+import snw.jmount.annotation.AccessField;
 import snw.jmount.annotation.MountPoint;
 
-@MountPoint("snw.jmount.impl.jdk.testobjects.origin.AnEnum")
-public interface AnEnumMP {
-    AnEnumMP A = null;
-    AnEnumMP B = null;
-
-    String getStr();
+@MountPoint("snw.jmount.test.testobjects.origin.AnotherThing")
+public interface AnotherThingMP {
+    @AccessField("a")
+    int getA();
 }

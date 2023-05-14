@@ -14,13 +14,24 @@
  * limitations under the License.
  */
 
-package snw.jmount.impl.jdk.testobjects.mp;
+package snw.jmount.test.testobjects.origin;
 
-import snw.jmount.annotation.AccessField;
-import snw.jmount.annotation.MountPoint;
+public class Something {
+    private final int var0 = 0;
+    public Object object = new Object();
+    public final AnotherThing anotherThing;
+    public boolean did = false;
 
-@MountPoint("snw.jmount.impl.jdk.testobjects.origin.AnotherThing")
-public interface AnotherThingMP {
-    @AccessField("a")
-    int getA();
+    public Something() {
+        this(new AnotherThing());
+    }
+
+    public Something(AnotherThing thing) {
+        this.anotherThing = thing;
+    }
+
+    public void doSomething() {
+        did = !did;
+        // work logic goes here
+    }
 }

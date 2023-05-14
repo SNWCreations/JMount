@@ -14,18 +14,26 @@
  * limitations under the License.
  */
 
-package snw.jmount.impl.jdk.testobjects.origin;
+package snw.jmount.test.testobjects.mp;
 
-public enum AnEnum {
-    A("A"), B("B");
+import snw.jmount.annotation.AccessField;
+import snw.jmount.annotation.MountPoint;
+import snw.jmount.annotation.Redirect;
+import snw.jmount.handle.FieldAccessor;
 
-    private final String str;
+@MountPoint("snw.jmount.test.testobjects.origin.Something")
+public interface SomethingMP {
+    @AccessField
+    FieldAccessor<Object> object();
 
-    AnEnum(String str) {
-        this.str = str;
-    }
+    @AccessField("var0")
+    int getVar0();
 
-    public String getStr() {
-        return str;
-    }
+    @AccessField
+    FieldAccessor<AnotherThingMP> anotherThing();
+
+    void doSomething(); // matches Something#doSomething
+
+    @Redirect("doSomething")
+    void anotherRefToDoSomething();
 }

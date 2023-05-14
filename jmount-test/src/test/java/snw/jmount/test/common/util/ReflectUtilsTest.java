@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package snw.jmount.common.util;
+package snw.jmount.test.common.util;
 
 import org.junit.jupiter.api.Test;
 import snw.jmount.common.exceptions.ReflectOperationException;
-import snw.jmount.common.testobjects.origin.Something;
-import snw.jmount.common.testobjects.mp.SomethingMP;
+import snw.jmount.test.testobjects.origin.Something;
+import snw.jmount.test.testobjects.mp.SomethingMP;
 
 import java.lang.reflect.Field;
 
@@ -34,7 +34,7 @@ public class ReflectUtilsTest {
 
     @Test
     void getAllMethodsTest() {
-        assertEquals(3, getAllMethods(SomethingMP.class, null).length);
+        assertEquals(5, getAllMethods(SomethingMP.class, null).length);
     }
 
     @Test

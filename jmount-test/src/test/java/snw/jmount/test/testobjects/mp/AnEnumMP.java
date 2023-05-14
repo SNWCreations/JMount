@@ -14,24 +14,14 @@
  * limitations under the License.
  */
 
-package snw.jmount.impl.jdk.testobjects.origin;
+package snw.jmount.test.testobjects.mp;
 
-public class Something {
-    private final int var0 = 0;
-    public Object object = new Object();
-    public final AnotherThing anotherThing;
-    public boolean did = false;
+import snw.jmount.annotation.MountPoint;
 
-    public Something() {
-        this(new AnotherThing());
-    }
+@MountPoint("snw.jmount.test.testobjects.origin.AnEnum")
+public interface AnEnumMP {
+    AnEnumMP A = null;
+    AnEnumMP B = null;
 
-    public Something(AnotherThing thing) {
-        this.anotherThing = thing;
-    }
-
-    public void doSomething() {
-        did = !did;
-        // work logic goes here
-    }
+    String getStr();
 }

@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package snw.jmount.impl.jdk.testobjects.origin;
+package snw.jmount.test.testobjects.origin;
 
-public class AnotherThing {
-    public int a = 0;
+public enum AnEnum {
+    A("A"), B("B");
 
-    public AnotherThing() {
+    private final String str;
+
+    AnEnum(String str) {
+        this.str = str;
     }
 
-    public AnotherThing(int a) {
-        this.a = a;
+    public String getStr() {
+        return str;
     }
 }
