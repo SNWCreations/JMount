@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static snw.jmount.common.util.CommonUtils.wrapperToPrimitive;
 import static snw.jmount.common.util.ReflectUtils.*;
 
 /**
@@ -230,22 +231,34 @@ public final class MountUtils {
         for (int i = 0; i < objects.length; i++) {
             Object object = objects[i];
             Object adding = null;
+            Class<?> cur = argTypes[i];
             if (object != null) {
                 if (mount.isMount(object)) {
                     final Object unmount = mount.unmount(object);
-                    if (argTypes[i].isAssignableFrom(unmount.getClass())){
+                    if (cur.isAssignableFrom(unmount.getClass())){
                         adding = unmount;
                     } else {
                         throw new IllegalArgumentException(
                                 "Provided object is not compatible with the provided argument types"
                         );
                     }
-                } else if (!argTypes[i].isAssignableFrom(object.getClass())) {
-                    throw new IllegalArgumentException(
-                            "Provided object is not compatible with the provided argument types"
-                    );
                 } else {
-                    adding = object;
+                    final Class<?> objectClass = object.getClass();
+                    if (cur.isPrimitive()) {
+                        if (cur == wrapperToPrimitive(objectClass)) {
+                            adding = object;
+                        }
+                    } else if (objectClass.isPrimitive()) {
+                        if (objectClass == wrapperToPrimitive(cur)) {
+                            adding = object;
+                        }
+                    } else if (!argTypes[i].isAssignableFrom(objectClass)) {
+                        throw new IllegalArgumentException(
+                                "Provided object is not compatible with the provided argument types"
+                        );
+                    } else {
+                        adding = object;
+                    }
                 }
             }
             list.add(adding);
