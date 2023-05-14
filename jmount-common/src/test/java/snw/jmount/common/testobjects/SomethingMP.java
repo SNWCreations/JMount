@@ -23,7 +23,7 @@ import snw.jmount.handle.FieldAccessor;
 @MountPoint("snw.jmount.common.testobjects.testobjects.Something")
 public interface SomethingMP {
     @AccessField
-    FieldAccessor<Integer> object();
+    FieldAccessor<Object> object();
 
     @AccessField("var0")
     int getVar0();
