@@ -72,7 +72,8 @@ public class MountInvocationHandler implements InvocationHandler {
         final Class<?> returnType = method.getReturnType();
         final MethodHandle handle = perform(() -> MethodHandles.lookup().unreflect(underlyingMethod)).bindTo(origin);
         return args -> {
-            Object o = handle.invoke(convert(mount, paramTypes, args));
+            // args is null if the Mount Point instance is mounting an enum constant.
+            Object o = args == null ? handle.invoke() : handle.invoke(convert(mount, paramTypes, args));
             if (isMP(returnType)) {
                 cacheLock.lock();
                 try {
