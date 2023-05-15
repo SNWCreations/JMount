@@ -51,7 +51,6 @@ There are different implementations of this library, it's up to you to use what 
 
 Now we have:
 * Pure JDK based, brand is "jdk"
-* ByteBuddy based, brand is "bytebuddy", **STILL UNDER DEVELOPMENT**
 
 Normally, their artifact ID are in the such format: `jmount-impl-<brand>`.
 

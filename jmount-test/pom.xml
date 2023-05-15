@@ -69,22 +69,6 @@
                             <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>bytebuddy-impl-test</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>integration-test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>**/*Test.java</include>
-                            </includes>
-                            <additionalClasspathElements>
-                                <additionalClasspathElement>${project.basedir}/../jmount-impl-bytebuddy/target/classes</additionalClasspathElement>
-                            </additionalClasspathElements>
-                            <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
         </plugins>
